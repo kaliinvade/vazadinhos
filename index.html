@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verificador de Vazamentos - BAHEAD</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .logo {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #38bdf8;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: black;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">BAHEAD</div>
+  <h1>Verifique se seu e-mail foi vazado</h1>
+  <input id="email" type="email" placeholder="Digite seu e-mail..." />
+  <button onclick="verificar()">Verificar</button>
+  <div class="result" id="resultado"></div>
+
+  <script>
+    async function verificar() {
+      const email = document.getElementById('email').value;
+      const resultado = document.getElementById('resultado');
+
+      if (!email) {
+        resultado.textContent = 'Digite um e-mail válido.';
+        return;
+      }
+
+      resultado.textContent = 'Verificando...';
+
+      try {
+        const response = await fetch(`/api/check-email.js?email=${encodeURIComponent(email)}`);
+        const data = await response.json();
+
+        if (data.breached) {
+          resultado.innerHTML = `
+            ⚠️ O e-mail <strong>${email}</strong> foi encontrado em <strong>${data.breaches.length}</strong> vazamento(s):<br><br>
+            ${data.breaches.map(b => `<li>${b}</li>`).join('')}
+          `;
+        } else {
+          resultado.innerHTML = `✅ O e-mail <strong>${email}</strong> está seguro!`;
+        }
+      } catch (err) {
+        resultado.textContent = 'Erro ao verificar o e-mail.';
+      }
+    }
+  </script>
+</body>
+</html>
