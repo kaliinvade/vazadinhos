@@ -2,7 +2,7 @@
 {
   "functions": {
     "api/check-email.js": {
-      "runtime": "edge"
+      "runtime": "vercel-php@1.0.0"
     }
   }
 }
