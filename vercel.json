@@ -1,8 +1,0 @@
-
-{
-  "functions": {
-    "api/check-email.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
-}
